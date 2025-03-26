@@ -132,13 +132,13 @@ io.on('connection', (socket: Socket) => {
   socket.emit('historical-data', historicalData);
   socket.emit('market-maker-data', generateMarketMakerOrders());
   
-  // Send candlestick updates every 100ms (real-time)
+  // Send candlestick updates every 1000ms (real-time)
   const candlestickInterval = setInterval(() => {
     const timestamp = Date.now();
     const candlestick = generateCandlestick(timestamp);
     historicalData.push(candlestick);
     socket.emit('candlestick-update', candlestick);
-  }, 100);
+  }, 1000);
   
   // Send market maker updates every 100ms (real-time)
   const marketMakerInterval = setInterval(() => {

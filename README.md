@@ -21,7 +21,7 @@ A real-time trading dashboard that displays candlestick charts and market maker 
 
 ### Prerequisites
 
-- Node.js (v14 or higher)
+- Node.js (v22 or higher)
 - npm or yarn
 
 ### Installation
