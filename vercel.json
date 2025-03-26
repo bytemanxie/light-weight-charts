@@ -11,9 +11,20 @@
     }
   ],
   "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
+    { 
+      "src": "/assets/(.*)", 
+      "headers": { "cache-control": "public, max-age=31536000, immutable" },
+      "dest": "/assets/$1" 
+    },
+    { 
+      "src": "/(.*\\.(js|css|svg|png|jpg|jpeg|gif|ico|json))",
+      "headers": { "cache-control": "public, max-age=31536000, immutable" },
+      "dest": "/$1" 
+    },
+    { 
+      "src": "/(.*)", 
+      "headers": { "cache-control": "s-maxage=1, stale-while-revalidate" },
+      "dest": "/index.html" 
     }
   ]
 }
