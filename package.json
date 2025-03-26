@@ -12,7 +12,9 @@
     "server:install": "cd server && npm install",
     "start": "concurrently \"npm run server\" \"npm run dev\"",
     "format": "prettier --write \"src/**/*.{ts,tsx}\"",
-    "format:check": "prettier --check \"src/**/*.{ts,tsx}\""
+    "format:check": "prettier --check \"src/**/*.{ts,tsx}\"",
+    "vercel-build": "npm run build",
+    "vercel-start": "serve -s dist"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.0.16",
@@ -22,6 +24,7 @@
     "lightweight-charts": "^5.0.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "serve": "^14.2.1",
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1",
     "styled-components": "^6.1.16"

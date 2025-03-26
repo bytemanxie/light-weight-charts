@@ -31,19 +31,19 @@ export function useSocketData(chartRefs: ChartRefs) {
       // Merge with existing data if needed
       const mergedData = [...historicalDataRef.current, ...data].sort((a, b) => {
         // Sort by time
-        return typeof a.time === 'number' && typeof b.time === 'number' 
-          ? a.time - b.time 
+        return typeof a.time === 'number' && typeof b.time === 'number'
+          ? a.time - b.time
           : String(a.time).localeCompare(String(b.time));
       });
-      
+
       // Remove duplicates (by time)
-      const uniqueData = mergedData.filter((item, index, self) => 
+      const uniqueData = mergedData.filter((item, index, self) =>
         index === self.findIndex(t => t.time === item.time)
       );
-      
+
       // Update the ref
       historicalDataRef.current = uniqueData;
-      
+
       // Update the chart
       candlestickSeriesRef.current?.setData(uniqueData);
 
@@ -66,7 +66,7 @@ export function useSocketData(chartRefs: ChartRefs) {
   useEffect(() => {
     // Get the socket server URL from environment variables or use a default
     const socketServerUrl = import.meta.env.VITE_SOCKET_SERVER_URL || 'http://localhost:3001';
-    
+
     // Connect to WebSocket server
     socketRef.current = io(socketServerUrl);
 
@@ -75,7 +75,7 @@ export function useSocketData(chartRefs: ChartRefs) {
       if (candlestickSeriesRef.current && volumeSeriesRef.current) {
         // Store the historical data
         historicalDataRef.current = data;
-        
+
         // Update the chart
         candlestickSeriesRef.current?.setData(data);
 
@@ -146,13 +146,13 @@ export function useSocketData(chartRefs: ChartRefs) {
     socketRef.current.on('transactions-update', (data: Transaction[]) => {
       // Add new transactions to pending queue
       pendingTransactionsRef.current = [...pendingTransactionsRef.current, ...data];
-      
+
       // Update transaction count
       transactionCountRef.current += data.length;
-      
+
       // Update total transactions
       setTotalTransactions(prev => prev + data.length);
-      
+
       // Process transactions in batches using requestAnimationFrame for better performance
       if (animationFrameRef.current === null) {
         animationFrameRef.current = requestAnimationFrame(processTransactions);
@@ -170,13 +170,13 @@ export function useSocketData(chartRefs: ChartRefs) {
       // Take a batch of transactions to process
       const batch = pendingTransactionsRef.current.slice(0, 100);
       pendingTransactionsRef.current = pendingTransactionsRef.current.slice(100);
-      
+
       // Update state with new transactions
       setTransactions(prevTransactions => {
         // Keep only the most recent 100 transactions to avoid memory issues
         return [...prevTransactions, ...batch].slice(-100);
       });
-      
+
       // Continue processing if there are more transactions
       if (pendingTransactionsRef.current.length > 0) {
         animationFrameRef.current = requestAnimationFrame(processTransactions);
@@ -190,9 +190,9 @@ export function useSocketData(chartRefs: ChartRefs) {
       if (socketRef.current) {
         socketRef.current.disconnect();
       }
-      
+
       clearInterval(tpsInterval);
-      
+
       if (animationFrameRef.current !== null) {
         cancelAnimationFrame(animationFrameRef.current);
       }
@@ -207,17 +207,17 @@ export function useSocketData(chartRefs: ChartRefs) {
         if (visibleRange && historicalDataRef.current.length > 0) {
           const oldestVisibleTime = visibleRange.from;
           const oldestDataTime = historicalDataRef.current[0].time;
-          
+
           // If we're close to the oldest data we have, request more
           if (typeof oldestVisibleTime === 'number' && typeof oldestDataTime === 'number' &&
-              oldestVisibleTime <= oldestDataTime + 5 * 60) { // Within 5 minutes of oldest data
+            oldestVisibleTime <= oldestDataTime + 5 * 60) { // Within 5 minutes of oldest data
             requestMoreHistoricalData(60, oldestDataTime);
           }
         }
       };
-      
+
       chartRef.current.timeScale().subscribeVisibleTimeRangeChange(handleTimeRangeChanged);
-      
+
       return () => {
         chartRef.current?.timeScale().unsubscribeVisibleTimeRangeChange(handleTimeRangeChanged);
       };
