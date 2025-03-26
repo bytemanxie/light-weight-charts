@@ -64,8 +64,11 @@ export function useSocketData(chartRefs: ChartRefs) {
   }, [candlestickSeriesRef, volumeSeriesRef]);
 
   useEffect(() => {
+    // Get the socket server URL from environment variables or use a default
+    const socketServerUrl = import.meta.env.VITE_SOCKET_SERVER_URL || 'http://localhost:3001';
+    
     // Connect to WebSocket server
-    socketRef.current = io('http://localhost:3001');
+    socketRef.current = io(socketServerUrl);
 
     // Handle historical data
     socketRef.current.on('historical-data', (data: CandlestickData[]) => {
